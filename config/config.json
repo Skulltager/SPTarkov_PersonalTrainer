@@ -1,0 +1,61 @@
+{
+    "enableHealthPerLevel": true,
+    "enableHealthPurchases": true,
+    "enableSkillExpPurchases": true,
+    "enableCharacterExpPurchase": true,
+    "enableWeightLimitPurchase": true,
+
+    "headHealthBase": 35,
+    "chestHealthBase": 85,
+    "stomachHealthBase": 70,
+    "leftArmHealthBase": 60,
+    "rightArmHealthBase": 60,
+    "leftLegHealthBase": 65,
+    "rightLegHealthBase": 65,
+
+    "headHealthPerLevel": 2,
+    "chestHealthPerLevel": 2,
+    "stomachHealthPerLevel": 2,
+    "leftArmHealthPerLevel": 3,
+    "rightArmHealthPerLevel": 3,
+    "leftLegHealthPerLevel": 3,
+    "rightLegHealthPerLevel": 3,
+    
+    "headHealthPerPurchase": 1,
+    "chestHealthPerPurchase": 1,
+    "stomachHealthPerPurchase": 1,
+    "leftArmHealthPerPurchase": 1,
+    "rightArmHealthPerPurchase": 1,
+    "leftLegHealthPerPurchase": 1,
+    "rightLegHealthPerPurchase": 1,
+    
+    "headHealthPurchaseCost": 300000,
+    "chestHealthPurchaseCost": 220000,
+    "stomachHealthPurchaseCost": 200000,
+    "leftArmHealthPurchaseCost": 120000,
+    "rightArmHealthPurchaseCost": 120000,
+    "leftLegHealthPurchaseCost": 120000,
+    "rightLegHealthPurchaseCost": 120000,
+
+    "standOverWeightLimitBaseX": 26,
+    "standOverWeightLimitBaseY": 67,
+    "walkOverWeightLimitBaseX": 45,
+    "walkOverWeightLimitBaseY": 75,
+    "sprintOverWeightLimitBaseX": 26,
+    "sprintOverWeightLimitBaseY": 63,
+
+    "standOverWeightLimitPerPurchaseX": 0.26,
+    "standOverWeightLimitPerPurchaseY": 0.67,
+    "walkOverWeightLimitPerPurchaseX": 0.45,
+    "walkOverWeightLimitPerPurchaseY": 0.75,
+    "sprintOverWeightLimitPerPurchaseX": 0.26,
+    "sprintOverWeightLimitPerPurchaseY": 0.63,
+
+    "resupplyAmount": 1000,
+    "weightIncreasePrice": 400000,
+    "characterPrice": 10000,
+    "characterExp": 50,
+    "skillPrice": 50000,
+    "skillExp": 1
+}
+  

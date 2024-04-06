@@ -1,0 +1,48 @@
+{
+    "Physical": [
+      "Endurance",
+      "Strength",
+      "Vitality",
+      "Health",
+      "StressResistance",
+      "Metabolism",
+      "Immunity"
+    ],
+    
+    "Mental":[
+        "Perception", 
+        "Intellect", 
+        "Attention", 
+        "Charisma", 
+        "Memory"
+    ],
+
+    "Practical": [
+      "AimDrills",
+      "Surgery",
+      "CovertMovement",
+      "Search",
+      "MagDrills",
+      "WeaponTreatment",
+      "Crafting",
+      "HideoutManagement"
+    ],
+  
+    "Combat": [
+      "RecoilControl",
+      "Pistol",
+      "Revolver",
+      "SMG",
+      "Assault",
+      "Shotgun",
+      "Sniper",
+      "LMG",
+      "HMG",
+      "Launcher",
+      "Throwing",
+      "AttachedLauncher",
+      "Melee",
+      "DMR"
+    ]
+  }
+  
