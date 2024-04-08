@@ -95,7 +95,6 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
         const traderHelper = new TraderHelper();
 
         const traderConfig: ITraderConfig = configServer.getConfig<ITraderConfig>(ConfigTypes.TRADER);
-        const ragfairConfig = configServer.getConfig<IRagfairConfig>(ConfigTypes.RAGFAIR);
 
         container.register<ProfileController>("ProfileControllerOriginal", ProfileController);
 
@@ -118,10 +117,10 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
                     try 
                     {
                         CharacterHealthTrader.calculateHealthValues(sessionID);
+                        CharacterHealthTrader.setDefaultWeightLimits();
                     } 
                     catch (error) 
                     {
-                        CharacterHealthTrader.setDefaultWeightLimits();
                         this.logger.error("Test" + error.message);
                     }
                     return output;
@@ -134,10 +133,10 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
                     try 
                     {
                         CharacterHealthTrader.calculateHealthValues(sessionID);
+                        CharacterHealthTrader.setDefaultWeightLimits();
                     } 
                     catch (error) 
                     {
-                        CharacterHealthTrader.setDefaultWeightLimits();
                         this.logger.error("Test" + error.message);
                     }
                     return output;
@@ -146,7 +145,6 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
         ], "aki");
 
         Traders[trader._id] = trader._id;
-        ragfairConfig.traders[trader._id] = false;
     }
 
     buyHealthOrExperience(pmcData: IPmcData, request: IProcessBaseTradeRequestData, sessionID: string) : IItemEventRouterResponse
@@ -203,27 +201,27 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
                 if (bodyPart === "Head")
                     healthPurchaseRecord.headHealthPurchases += buyData.count;
                 
-                if (bodyPart === "Chest")
+                else if (bodyPart === "Chest")
                     healthPurchaseRecord.chestHealthPurchases += buyData.count;
 
-                if (bodyPart === "Stomach")
+                else if (bodyPart === "Stomach")
                     healthPurchaseRecord.stomachHealthPurchases += buyData.count;
                 
-                if (bodyPart === "LeftLeg")
+                else if (bodyPart === "LeftLeg")
                     healthPurchaseRecord.leftLegHealthPurchases += buyData.count;
             
-                if (bodyPart === "RightLeg")
+                else if (bodyPart === "RightLeg")
                     healthPurchaseRecord.rightLegHealthPurchases += buyData.count;
             
-                if (bodyPart === "LeftArm")
+                else if (bodyPart === "LeftArm")
                     healthPurchaseRecord.leftArmHealthPurchases += buyData.count;
             
-                if (bodyPart === "RightArm")
+                else if (bodyPart === "RightArm")
                     healthPurchaseRecord.rightArmHealthPurchases += buyData.count;
 
                 const scavData = profileHelper.getScavProfile(sessionID);
                 CharacterHealthTrader.setPmcHealthValues(pmcData, healthPurchaseRecord);
-                CharacterHealthTrader.setSvavHealthValues(scavData, healthPurchaseRecord);
+                CharacterHealthTrader.setScavHealthValues(scavData, healthPurchaseRecord);
                 CharacterHealthTrader.saveHealthPurchaseHistory(validateSchema, healthPurchases);
                 
                 paymentService.payMoney(pmcData, buyData, sessionID, output);
@@ -269,30 +267,50 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
         const healthPurchaseRecord: HealthPurchaseRecord =  CharacterHealthTrader.getHealthPurchaseRecord(pmcData._id, healthPurchases);
         
         CharacterHealthTrader.setPmcHealthValues(pmcData, healthPurchaseRecord);
-        CharacterHealthTrader.setSvavHealthValues(scavData, healthPurchaseRecord);
+        CharacterHealthTrader.setScavHealthValues(scavData, healthPurchaseRecord);
         CharacterHealthTrader.setWeightLimits(healthPurchaseRecord);
     }
 
     static setPmcHealthValues(pmcData: IPmcData, healthPurchaseRecord: HealthPurchaseRecord)
     {
-        pmcData.Health.BodyParts.Head.Health.Maximum = config.headHealthBase + (pmcData.Info.Level - 1) * config.headHealthPerLevel + healthPurchaseRecord.headHealthPurchases * config.headHealthPerPurchase;
-        pmcData.Health.BodyParts.Stomach.Health.Maximum = config.stomachHealthBase + (pmcData.Info.Level - 1) * config.stomachHealthPerLevel + healthPurchaseRecord.stomachHealthPurchases * config.stomachHealthPerPurchase;
-        pmcData.Health.BodyParts.Chest.Health.Maximum = config.chestHealthBase + (pmcData.Info.Level - 1) * config.chestHealthPerLevel + healthPurchaseRecord.chestHealthPurchases * config.chestHealthPerPurchase;
-        pmcData.Health.BodyParts.LeftArm.Health.Maximum = config.leftArmHealthBase + (pmcData.Info.Level - 1) * config.leftArmHealthPerLevel + healthPurchaseRecord.leftArmHealthPurchases * config.leftArmHealthPerPurchase;
-        pmcData.Health.BodyParts.RightArm.Health.Maximum = config.rightArmHealthBase + (pmcData.Info.Level - 1) * config.rightArmHealthPerLevel + healthPurchaseRecord.rightArmHealthPurchases * config.rightArmHealthPerPurchase;
-        pmcData.Health.BodyParts.LeftLeg.Health.Maximum = config.leftLegHealthBase + (pmcData.Info.Level - 1) * config.leftLegHealthPerLevel + healthPurchaseRecord.leftLegHealthPurchases * config.leftLegHealthPerPurchase;
-        pmcData.Health.BodyParts.RightLeg.Health.Maximum = config.rightLegHealthBase + (pmcData.Info.Level - 1) * config.rightLegHealthPerLevel + healthPurchaseRecord.rightLegHealthPurchases * config.rightLegHealthPerPurchase;
+        const pmcHealthLevel = config.enableHealthPerLevel ? pmcData.Info.Level - 1 : 0;
+        
+        const headHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.headHealthPurchases : 0;
+        const stomachHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.stomachHealthPurchases : 0;
+        const chestHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.chestHealthPurchases : 0;
+        const leftArmHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.leftArmHealthPurchases : 0;
+        const rightArmHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.rightArmHealthPurchases : 0;
+        const leftLegHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.leftLegHealthPurchases : 0;
+        const rightLegHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.rightLegHealthPurchases : 0;
+
+        pmcData.Health.BodyParts.Head.Health.Maximum = config.headHealthBase + pmcHealthLevel * config.headHealthPerLevel + headHealthPurchases * config.headHealthPerPurchase;
+        pmcData.Health.BodyParts.Stomach.Health.Maximum = config.stomachHealthBase + pmcHealthLevel * config.stomachHealthPerLevel + stomachHealthPurchases * config.stomachHealthPerPurchase;
+        pmcData.Health.BodyParts.Chest.Health.Maximum = config.chestHealthBase + pmcHealthLevel * config.chestHealthPerLevel + chestHealthPurchases * config.chestHealthPerPurchase;
+        pmcData.Health.BodyParts.LeftArm.Health.Maximum = config.leftArmHealthBase + pmcHealthLevel * config.leftArmHealthPerLevel + leftArmHealthPurchases * config.leftArmHealthPerPurchase;
+        pmcData.Health.BodyParts.RightArm.Health.Maximum = config.rightArmHealthBase + pmcHealthLevel * config.rightArmHealthPerLevel + rightArmHealthPurchases * config.rightArmHealthPerPurchase;
+        pmcData.Health.BodyParts.LeftLeg.Health.Maximum = config.leftLegHealthBase + pmcHealthLevel * config.leftLegHealthPerLevel + leftLegHealthPurchases * config.leftLegHealthPerPurchase;
+        pmcData.Health.BodyParts.RightLeg.Health.Maximum = config.rightLegHealthBase + pmcHealthLevel * config.rightLegHealthPerLevel + rightLegHealthPurchases * config.rightLegHealthPerPurchase;
     }
 
-    static setSvavHealthValues(pmcData: IPmcData, healthPurchaseRecord: HealthPurchaseRecord)
+    static setScavHealthValues(pmcData: IPmcData, healthPurchaseRecord: HealthPurchaseRecord)
     {
-        pmcData.Health.BodyParts.Head.Health.Maximum = config.headHealthBase + (pmcData.Info.Level - 1) * config.headHealthPerLevel + healthPurchaseRecord.headHealthPurchases * config.headHealthPerPurchase;
-        pmcData.Health.BodyParts.Stomach.Health.Maximum = config.stomachHealthBase + (pmcData.Info.Level - 1) * config.stomachHealthPerLevel + healthPurchaseRecord.stomachHealthPurchases * config.stomachHealthPerPurchase;
-        pmcData.Health.BodyParts.Chest.Health.Maximum = config.chestHealthBase + (pmcData.Info.Level - 1) * config.chestHealthPerLevel + healthPurchaseRecord.chestHealthPurchases * config.chestHealthPerPurchase;
-        pmcData.Health.BodyParts.LeftArm.Health.Maximum = config.leftArmHealthBase + (pmcData.Info.Level - 1) * config.leftArmHealthPerLevel + healthPurchaseRecord.leftArmHealthPurchases * config.leftArmHealthPerPurchase;
-        pmcData.Health.BodyParts.RightArm.Health.Maximum = config.rightArmHealthBase + (pmcData.Info.Level - 1) * config.rightArmHealthPerLevel + healthPurchaseRecord.rightArmHealthPurchases * config.rightArmHealthPerPurchase;
-        pmcData.Health.BodyParts.LeftLeg.Health.Maximum = config.leftLegHealthBase + (pmcData.Info.Level - 1) * config.leftLegHealthPerLevel + healthPurchaseRecord.leftLegHealthPurchases * config.leftLegHealthPerPurchase;
-        pmcData.Health.BodyParts.RightLeg.Health.Maximum = config.rightLegHealthBase + (pmcData.Info.Level - 1) * config.rightLegHealthPerLevel + healthPurchaseRecord.rightLegHealthPurchases * config.rightLegHealthPerPurchase;
+        const pmcHealthLevel = config.enableHealthPerLevel ? pmcData.Info.Level - 1 : 0;
+
+        const headHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.headHealthPurchases : 0;
+        const stomachHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.stomachHealthPurchases : 0;
+        const chestHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.chestHealthPurchases : 0;
+        const leftArmHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.leftArmHealthPurchases : 0;
+        const rightArmHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.rightArmHealthPurchases : 0;
+        const leftLegHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.leftLegHealthPurchases : 0;
+        const rightLegHealthPurchases = config.enableHealthPurchases ? healthPurchaseRecord.rightLegHealthPurchases : 0;
+
+        pmcData.Health.BodyParts.Head.Health.Maximum = config.headHealthBase + pmcHealthLevel * config.headHealthPerLevel + headHealthPurchases * config.headHealthPerPurchase;
+        pmcData.Health.BodyParts.Stomach.Health.Maximum = config.stomachHealthBase + pmcHealthLevel * config.stomachHealthPerLevel + stomachHealthPurchases * config.stomachHealthPerPurchase;
+        pmcData.Health.BodyParts.Chest.Health.Maximum = config.chestHealthBase + pmcHealthLevel * config.chestHealthPerLevel + chestHealthPurchases * config.chestHealthPerPurchase;
+        pmcData.Health.BodyParts.LeftArm.Health.Maximum = config.leftArmHealthBase + pmcHealthLevel * config.leftArmHealthPerLevel + leftArmHealthPurchases * config.leftArmHealthPerPurchase;
+        pmcData.Health.BodyParts.RightArm.Health.Maximum = config.rightArmHealthBase + pmcHealthLevel * config.rightArmHealthPerLevel + rightArmHealthPurchases * config.rightArmHealthPerPurchase;
+        pmcData.Health.BodyParts.LeftLeg.Health.Maximum = config.leftLegHealthBase + pmcHealthLevel * config.leftLegHealthPerLevel + leftLegHealthPurchases * config.leftLegHealthPerPurchase;
+        pmcData.Health.BodyParts.RightLeg.Health.Maximum = config.rightLegHealthBase + pmcHealthLevel * config.rightLegHealthPerLevel + rightLegHealthPurchases * config.rightLegHealthPerPurchase;
 
         pmcData.Health.BodyParts.Head.Health.Current = pmcData.Health.BodyParts.Head.Health.Maximum;
         pmcData.Health.BodyParts.Stomach.Health.Current = pmcData.Health.BodyParts.Stomach.Health.Maximum;
@@ -319,8 +337,14 @@ class CharacterHealthTrader implements IPreAkiLoadMod, IPostDBLoadMod
 
     static setWeightLimits(healthPurchaseRecord: HealthPurchaseRecord)
     {
+        if (!config.enableWeightLimitPurchase)
+        {
+            this.setDefaultWeightLimits();
+            return;
+        }
         const databaseServer:DatabaseServer = CharacterHealthTrader.container.resolve<DatabaseServer>("DatabaseServer");
         const globals = databaseServer.getTables().globals.config;
+
         globals.Stamina.BaseOverweightLimits.x = config.standOverWeightLimitBaseX + config.standOverWeightLimitPerPurchaseX * healthPurchaseRecord.weightLimitIncreasePurchases;
         globals.Stamina.BaseOverweightLimits.y = config.standOverWeightLimitBaseY + config.standOverWeightLimitPerPurchaseY * healthPurchaseRecord.weightLimitIncreasePurchases;
         
