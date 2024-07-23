@@ -41,6 +41,8 @@
     "standOverWeightLimitBaseY": 67,
     "walkOverWeightLimitBaseX": 45,
     "walkOverWeightLimitBaseY": 75,
+    "walkSpeedOverWeightLimitBaseX": 35,
+    "walkSpeedOverWeightLimitBaseY": 70,
     "sprintOverWeightLimitBaseX": 26,
     "sprintOverWeightLimitBaseY": 63,
 
@@ -48,6 +50,8 @@
     "standOverWeightLimitPerPurchaseY": 0.67,
     "walkOverWeightLimitPerPurchaseX": 0.45,
     "walkOverWeightLimitPerPurchaseY": 0.75,
+    "walkSpeedOverWeightLimitPerPurchaseX": 0.35,
+    "walkSpeedOverWeightLimitPerPurchaseY": 0.7,
     "sprintOverWeightLimitPerPurchaseX": 0.26,
     "sprintOverWeightLimitPerPurchaseY": 0.63,
 

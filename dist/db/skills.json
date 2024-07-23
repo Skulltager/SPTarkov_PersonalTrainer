@@ -1,48 +1,66 @@
 {
-    "Physical": [
-      "Endurance",
-      "Strength",
-      "Vitality",
-      "Health",
-      "StressResistance",
-      "Metabolism",
-      "Immunity"
-    ],
+  "Combat": [
+    "AimDrills",
+    "Assault",
+    "Sniper",
+    "DMR",
+    "HMG",
+    "LMG",
+    "Melee",
+    "Pistol",
+    "Revolver",
+    "Launcher",
+    "Shotgun",
+    "SMG",
+    "Throwing",
+    "AttachedLauncher",
+    "RecoilControl"
+  ],
     
-    "Mental":[
-        "Perception", 
-        "Intellect", 
-        "Attention", 
-        "Charisma", 
-        "Memory"
-    ],
+  "Mental":[
+    "Attention", 
+    "Charisma", 
+    "Intellect", 
+    "Memory",
+    "Perception"
+  ],
 
-    "Practical": [
-      "AimDrills",
-      "Surgery",
-      "CovertMovement",
-      "Search",
-      "MagDrills",
-      "WeaponTreatment",
-      "Crafting",
-      "HideoutManagement"
-    ],
-  
-    "Combat": [
-      "RecoilControl",
-      "Pistol",
-      "Revolver",
-      "SMG",
-      "Assault",
-      "Shotgun",
-      "Sniper",
-      "LMG",
-      "HMG",
-      "Launcher",
-      "Throwing",
-      "AttachedLauncher",
-      "Melee",
-      "DMR"
-    ]
+  "Physical": [
+    "Endurance",
+    "Strength",
+    "Vitality",
+    "Health",
+    "StressResistance",
+    "Metabolism",
+    "Immunity"
+  ],
+
+  "Practical": [
+    "AdvancedModding",
+    "Auctions",
+    "Barter",
+    "Cleanoperations",
+    "CovertMovement",
+    "Crafting",
+    "FieldMedicine",
+    "FirstAid",
+    "HeavyVests",
+    "HideoutManagement",
+    "LightVests",
+    "Lockpicking",
+    "MagDrills",
+    "NightOps",
+    "ProneMovement",
+    "Search",
+    "Shadowconnections",
+    "SilentOps",
+    "Sniping",
+    "Surgery",
+    "Taskperformance",
+    "TroubleShooting",
+    "WeaponTreatment",
+    "WeaponModding"
+  ]
+
   }
   
