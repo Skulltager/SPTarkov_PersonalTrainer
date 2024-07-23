@@ -80,7 +80,7 @@ class CharacterHealthTrader implements IPreSptLoadMod, IPostDBLoadMod
 
     constructor() 
     {
-        this.mod = "skulltag-personaltrainer-1.0.3"; // See? I changed it this time.
+        this.mod = "skulltag-personaltrainer";
     }
     
     preSptLoad(container: DependencyContainer): void 
